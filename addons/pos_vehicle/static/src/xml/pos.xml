@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+  <!--  Roja(25-9-18) -->
+  <t t-name="ClientListScreenWidget">
+    <div class="clientlist-screen screen">
+      <div class="screen-content">
+        <section class="top-content">
+          <span class='button back'>
+          <i class='fa fa-angle-double-left'></i>
+          Cancel
+          </span>
+          <div class='cus_search'>
+            <i class="fa fa-user" id="user"/>
+            <i class="fa fa-search" id="search"/>
+          </div>
+          <span class='searchbox' >
+          <input placeholder='Search Customers' id="number" />
+          <span class='search-clear'><i class="fa fa-arrow-left"></i></span>
+          <i class='fa fa-camera' id="open_cam" ></i>
+          </span>
+          <span class='searchbox'></span>
+          <span class='button new-customer'>
+          <i class='fa fa-user'></i>
+          <i class='fa fa-plus'></i>
+          </span>
+          <span class='button next oe_hidden highlight' id="c_sel">
+          Select Customer
+          <i class='fa fa-angle-double-right'></i>
+          </span>
+        </section>
+        <section class="full-content">
+          <div class='window'>
+            <section class='subwindow collapsed touch-scrollable scrollable-y'>
+              <div class='subwindow-container collapsed'>
+                <div class='subwindow-container-fix client-details-contents'>
+                </div>
+              </div>
+            </section>
+            <section class='subwindow'>
+              <div class='subwindow-container'>
+                <div class='subwindow-container-fix touch-scrollable scrollable-y'>
+                  <table class='client-list'>
+                    <thead>
+                      <tr>
+                        <th>Vehicle Number</th>
+                        <th>Customer Name</th>
+                      </tr>
+                    </thead>
+                    <tbody class='client-list-contents'>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </div>
+    </div>
+  </t>
+  <t t-name="ClientLine">
+    <tr class='client-line' t-att-data-id='partner.cache'>
+      <td>
+        <t t-esc='partner.vehicle_number or ""' />
+      </td>
+      <td>
+        <t t-esc='partner.name' />
+      </td>
+    </tr>
+  </t>
+  <t t-name="ClientDetails">
+    <section class='client-details'>
+      <div class='client-picture'>
+        <img t-att-src='widget.partner_icon_url(partner.id)' />
+      </div>
+      <div class='client-detail'>
+        <t t-if='partner.vehicle_number'>
+          <div class='client-vehicle-name'>
+            <t t-esc='partner.vehicle_number'/>
+          </div>
+        </t>
+        <t t-if='!partner.vehicle_number'>
+          <span class='detail client-id empty'>N/A</span>
+        </t>
+      </div>
+      <div class='client-name'>
+        <t t-esc='partner.name' />
+      </div>
+      <div class='edit-buttons'>
+        <div class='button edit'><i class='fa fa-pencil-square' /></div>
+      </div>
+      <div class='client-details-box clearfix'>
+        <div class='client-details-left'>
+          <div class='client-detail'>
+            <span class='label'>Address</span>
+            <t t-if='partner.address'>
+              <span class='detail client-address'>
+                <t t-esc='partner.address' />
+              </span>
+            </t>
+            <t t-if='!partner.address'>
+              <span class='detail client-address empty'>N/A</span>
+            </t>
+          </div>
+          <div class='client-detail'>
+            <span class='label'>Email</span>
+            <t t-if='partner.email'>
+              <span class='detail client-email'>
+                <t t-esc='partner.email' />
+              </span>
+            </t>
+            <t t-if='!partner.email'>
+              <span class='detail client-email empty'>N/A</span>
+            </t>
+          </div>
+          <div class='client-detail'>
+            <span class='label'>Mobile</span>
+            <t t-if='partner.phone'>
+              <span class='detail client-phone'>
+                <t t-esc='partner.phone' />
+              </span>
+            </t>
+            <t t-if='!partner.phone'>
+              <span class='detail client-phone empty'>N/A</span>
+            </t>
+          </div>
+        </div>
+        <div class='client-details-right'>
+          <div class='client-detail' style="display:none">
+            <span class='label' >Barcode</span>
+            <t t-if='partner.barcode'>
+              <span class='detail client-id'>
+                <t t-esc='partner.barcode'/>
+              </span>
+            </t>
+            <t t-if='!partner.barcode'>
+              <span class='detail client-id empty'>N/A</span>
+            </t>
+          </div>
+          <div class='client-detail'>
+            <span class='label'>Tax ID</span>
+            <t t-if='partner.vat'>
+              <span class='detail vat'>
+                <t t-esc='partner.vat'/>
+              </span>
+            </t>
+            <t t-if='!partner.vat'>
+              <span class='detail vat empty'>N/A</span>
+            </t>
+          </div>
+          <div t-attf-class='client-detail #{widget.pos.pricelists.length &lt;= 1 ? "oe_hidden" : ""}'>
+            <span class='label'>Pricelist</span>
+            <t t-if='partner.property_product_pricelist'>
+              <span class='detail property_product_pricelist'>
+                <t t-esc='partner.property_product_pricelist[1]'/>
+              </span>
+            </t>
+            <t t-if='!partner.property_product_pricelist'>
+              <span class='detail property_product_pricelist empty'>N/A</span>
+            </t>
+          </div>
+        </div>
+      </div>
+    </section>
+  </t>
+  <t t-name="ClientDetailsEdit">
+    <section class='client-details edit'>
+      <div class="client-main" style="width:100%">
+        <div class='client-picture'>
+          <t t-if='!partner.id'>
+            <i class='fa fa-camera'></i>
+          </t>
+          <t t-if='partner.id'>
+            <img t-att-src='widget.partner_icon_url(partner.id)' />
+          </t>
+          <input type='file' class='image-uploader'></input>   
+        </div>
+        <input class='detail client-vehicle-name' id="vehicle" name='vehicle_no' t-att-value='partner.vehicle_number' placeholder='Vehicle Number'></input>
+        <i class='fa fa-camera' id="open"  onclick="AndroidInterface.print_check1('vehicle');" ></i>
+        <input list='customers' class='detail client-name' name='name'  t-att-value='partner.name' placeholder='Name'>  </input>
+        <datalist id='customers'>
+          <t t-foreach='widget.pos.partners' t-as='cus'>
+            <option t-att-value='cus.id' t-att-selected="cus_cus_id ? ((cus.id === cus.cus_id) ? true : undefined) : undefined">
+              <t t-esc='cus.name'/>
+            </option>
+          </t>
+        </datalist>
+        <div class='edit-buttons'>
+          <div class='button undo'><i class='fa fa-undo' /></div>
+          <div class='button save'><i class='fa fa-floppy-o' /></div>
+        </div>
+      </div>
+      <div class='client-details-box clearfix' >
+        <div class='client-details-right'>
+          <div class='client-detail' style="display:none">
+            <span class='label'>Barcode</span>
+            <input class='detail barcode'       name='barcode'     t-att-value='partner.barcode || ""'></input>
+          </div>
+          <div class='client-detail' style="display:none"  >
+            <span class='label'>Email</span>
+            <input class='detail client-email'  name='email'    type='email'    t-att-value='partner.email || ""'></input>
+          </div>
+          <div class='client-detail'>
+            <span class='label'>Phone</span>
+            <input class='detail client-phone'  name='phone'    type='tel'      t-att-value='partner.phone || ""'></input>
+          </div>
+          <div class='client-detail'>
+            <span class='label'>Tax ID</span>
+            <input class='detail vat'           name='vat'     t-att-value='partner.vat || ""'></input>
+          </div>
+          <div t-attf-class='client-detail #{widget.pos.pricelists.length &lt;= 1 ? "oe_hidden" : ""}'>
+            <span class='label'>Pricelist</span>
+            <select class='detail needsclick' name='property_product_pricelist'>
+              <t t-foreach='widget.pos.pricelists' t-as='pricelist'>
+                <option t-att-value='pricelist.id'
+                  t-att-selected="partner.property_product_pricelist ? (pricelist.id === partner.property_product_pricelist[0] ? true : undefined) : undefined">
+                  <t t-esc='pricelist.display_name'/>
+                </option>
+              </t>
+            </select>
+          </div>
+        </div>
+        <div class='client-details-left'>
+          <div class='client-detail'>
+            <span class='label'>Street</span>
+            <input class='detail client-address-street' name='street'       t-att-value='partner.street || ""' placeholder='Street'></input>
+          </div>
+          <div class='client-detail'>
+            <span class='label'>City</span>
+            <input class='detail client-address-city'   name='city'         t-att-value='partner.city || ""' placeholder='City'></input>
+          </div>
+          <div class='client-detail'>
+            <span class='label'>Postcode</span>
+            <input class='detail client-address-zip'    name='zip'          t-att-value='partner.zip || ""' placeholder='ZIP'></input>
+          </div>
+          <div class='client-detail'>
+            <span class='label'>Country</span>
+            <select class='detail client-address-country needsclick' name='country_id'>
+              <option value=''>None</option>
+              <t t-foreach='widget.pos.countries' t-as='country'>
+                <option t-att-value='country.id' t-att-selected="partner.country_id ? ((country.id === partner.country_id[0]) ? true : undefined) : undefined">
+                  <t t-esc='country.name'/>
+                </option>
+              </t>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+  </t>
+  <t t-name="ActionpadWidget">
+    <div class="actionpad">
+      <button t-attf-class='button set-customer #{ ( widget.pos.get_client() and widget.pos.get_client().name.length > 10) ? "decentered" : "" }' >
+        <i class='fa fa-user' /> 
+        <div class="actionname">
+          <t t-if="widget.pos.get_client()">
+            <t t-esc="widget.pos.get_client().name" />
+            <br/>
+            <span id="action_vehicle_no">
+              <t t-esc="widget.pos.get_client().vehicle_number" />
+            </span>
+          </t>
+          <t t-if="!widget.pos.get_client()">
+            Customer
+          </t>
+        </div>
+      </button>
+      <button class='button pay'>
+        <i class="fa fa-chevron-circle-right" aria-hidden="true"/> 
+        <div class="actionname">
+          Payment
+        </div>
+      </button>
+    </div>
+  </t>
+  <t t-name="NumpadWidget">
+    <div class="numpad">
+      <button class="input-button number-char">1</button>
+      <button class="input-button number-char">2</button>
+      <button class="input-button number-char">3</button>
+      <button class="can-sale" data-mode='can'>Can</button>
+      <br />
+      <button class="input-button number-char">4</button>
+      <button class="input-button number-char">5</button>
+      <button class="input-button number-char">6</button>
+      <button class="mode-button" data-mode='quantity'>Qty</button>
+      <br />
+      <button class="input-button number-char">7</button>
+      <button class="input-button number-char">8</button>
+      <button class="input-button number-char">9</button>
+      <button class="mode-button" data-mode='amt'>Amt</button>
+      <br />
+      <button class="input-button numpad-minus" >+/-</button>
+      <button class="input-button number-char">0</button>
+      <button class="input-button number-char">.</button>
+      <button class="input-button numpad-backspace">
+      <img style="pointer-events: none;" src="/point_of_sale/static/src/img/backspace.png" width="24" height="21" />
+      </button>
+    </div>
+  </t>
+  <t t-name="XmlDotmatrixHeader">
+    <br/>
+    <pre><t t-esc="receipt.shift_part || ''"/></pre>
+    <pre><t t-esc="receipt.bill_time_part || ''"/></pre>
+    <br/>
+    <br/>
+    <br/>
+    <pre><t t-esc="receipt.customer_part || ''"/></pre>
+  </t>
+  <t t-name="XmlDotmatrixFooter">
+    <div size='normal' bold='on'>
+      <pre><t t-esc='receipt.footer_lines' /><t t-esc='receipt.space' /><t t-esc='receipt.footer_lines' /></pre>
+    </div>
+    <br/>       
+    <partialcut></partialcut>
+  </t>
+  <t t-name="XmlDotmatrixReceipt">
+    <receipt value-thousands-separator=''>
+      <div font='condensed_b' width='96'>
+        <t t-call="XmlDotmatrixHeader"/>
+        <div class='orderlines' line-ratio='0.6'>
+          <br/>
+          <t t-if='receipt.lines'>
+            <t t-foreach='receipt.lines' t-as='line'>
+              <div>
+                <pre><t t-esc='line.line' /><t t-esc='line.uamt' /><t t-esc='line.tamt' /><t t-esc='receipt.space' /><t t-esc='line.line' /><t t-esc='line.uamt' /><t t-esc='line.tamt' /></pre>
+              </div>
+            </t>
+            <t t-foreach='receipt.tax_details' t-as='tax'>
+              <div >
+                <pre><t t-esc='tax.line' /> <t t-esc='tax.amt' /><t t-esc='receipt.space' /><t t-esc='tax.line' /> <t t-esc='tax.amt' /></pre>
+              </div>
+            </t>
+            <t t-foreach="receipt.breaks" t-as="l">
+              <div><br/></div>
+            </t>
+            <t t-call="XmlDotmatrixFooter"/>
+          </t>
+          <t t-if='receipt.wrap_orderlines'>
+            <t t-if='receipt.wrap_orderlines.first'>
+              <t t-foreach='receipt.wrap_orderlines.first' t-as='wline'>
+                <div>
+                  <pre><t t-esc='wline.line' /><t t-esc='wline.uamt' /><t t-esc='wline.tamt' /><t t-esc='receipt.space' /><t t-esc='wline.line' /><t t-esc='wline.uamt' /><t t-esc='wline.tamt' /></pre>
+                </div>
+              </t>
+              <t t-foreach="receipt.wrap_orderlines.first.breaks" t-as="l">
+                <div><br/></div>
+              </t>
+              <pre><t t-esc='receipt.wrap_orderlines.first.footer' /><t t-esc='receipt.space' /><t t-esc='receipt.wrap_orderlines.first.footer' /></pre>
+              <br/>
+            </t>
+            <t t-foreach='receipt.wrap_orderlines.other' t-as='line'>
+              <br/><br/>
+              <t t-call="XmlDotmatrixHeader"/>
+              <br/>
+              <t t-foreach='line' t-as='wline'>
+                <div>
+                  <pre><t t-esc='wline.line' /><t t-esc='wline.uamt' /><t t-esc='wline.tamt' /><t t-esc='receipt.space' /><t t-esc='wline.line' /><t t-esc='wline.uamt' /><t t-esc='wline.tamt' /></pre>
+                </div>
+              </t>
+              <br/>
+              <pre><t t-esc='receipt.wrap_orderlines.other.footer' /><t t-esc='receipt.space' /><t t-esc='receipt.wrap_orderlines.other.footer' /></pre>
+              <br/><br/>
+            </t>
+            <t t-if='receipt.wrap_orderlines.last'>
+              <br/><br/>
+              <t t-call="XmlDotmatrixHeader"/>
+              <br/>
+              <t t-foreach='receipt.wrap_orderlines.last' t-as='wline'>
+                <div>
+                  <pre><t t-esc='wline.line' /><t t-esc='wline.uamt' /><t t-esc='wline.tamt' /><t t-esc='receipt.space' /><t t-esc='wline.line' /><t t-esc='wline.uamt' /><t t-esc='wline.tamt' /></pre>
+                </div>
+              </t>
+              <t t-foreach='receipt.tax_details' t-as='tax'>
+                <div >
+                  <pre><t t-esc='tax.line' /> <t t-esc='tax.amt' /><t t-esc='receipt.space' /><t t-esc='tax.line' /> <t t-esc='tax.amt' /></pre>
+                </div>
+              </t>
+              <t t-foreach="receipt.wrap_orderlines.last.breaks" t-as="l">
+                <div><br/></div>
+              </t>
+              <t t-call="XmlDotmatrixFooter"/>
+            </t>
+          </t>
+        </div>
+        <!--<line>
+          <t t-foreach='paymentlines' t-as='line'>
+              <left><t t-esc="line.name"/></left>
+              <right><value t-att-value-decimals='pos.currency.decimals'><t t-esc='line.get_amount()'/></value></right>
+          </t>
+          </line>
+          <br/>
+          <line size='double-height'>
+          <left>CHANGE</left>
+          <right><value t-att-value-decimals='pos.currency.decimals'><t t-esc='receipt.change' /></value></right>
+          </line>
+          <br/>
+          <t t-if='receipt.cashier'>
+          <div class="cashier">
+              USER : (<t t-esc='receipt.cashier' />)
+          </div>
+          </t>
+          <hr/>
+          <t t-if='receipt.footer_xml'>
+          <t t-raw='receipt.footer_xml' />
+          </t>
+          <t t-if='!receipt.footer_xml and receipt.footer'>
+          <div>
+              <t t-esc="receipt.footer" />
+          </div>
+          </t>
+          <hr/>-->
+      </div>
+    </receipt>
+  </t>
+  <t t-name='XmlBillEntry'>
+    <receipt cut='false' align='left' width='272' value-thousands-separator='' >
+      <div font='condensed_b'>
+        <table>
+          <tr>
+            <_td align='left' width="12">
+              <t t-esc="receipt.bill_no || ''"/>
+            </_td>
+            <t t-foreach='receipt.orderlines_entry' t-as='entry'>
+              <_td align='right' t-att-width='entry[0]["width"]'>
+                <t t-if="entry[0]['remove_trailing_zeros']">
+                  <t t-esc="entry[0]['qty']"/>
+                </t>
+                <t t-if="!entry[0]['remove_trailing_zeros']">
+                  <t t-esc="entry[0]['qty'].toFixed(4)"/>
+                </t>
+              </_td>
+              <_td align='right' width="10">
+                <t t-esc="entry[0]['amt'].toFixed(2)"/>
+              </_td>
+            </t>
+            <_td align='right' width="10">
+              <t t-esc='receipt.total_tax.toFixed(2)'/>
+            </_td>
+            <_td align='right' width="10">
+              <t t-esc='receipt.total_with_tax.toFixed(2)'/>
+            </_td>
+            <_td align='left' width="14">
+              <t t-esc="receipt.vehicle_no || ''"/>
+            </_td>
+            <_td align='left' width="35">
+              <t t-if="receipt.payment == CARD" />
+              <t t-esc="receipt.customer.wrapped_name || ''"/>
+            </_td>
+          </tr>
+        </table>
+      </div>
+    </receipt>
+  </t>
+  <t t-name="XmlReceipt">
+    <receipt align='left' width='42' value-thousands-separator='' >
+      <div font='b'>
+        <line>
+          <left>
+            GSTIN:
+            <t t-esc="receipt.company.gstin || ''"/>
+          </left>
+          <right>
+            TIN:
+            <t t-esc="receipt.company.vat || ''"/>
+          </right>
+        </line>
+        <line>
+          <left>
+            B.No:
+            <t t-esc="receipt.name"/>
+          </left>
+          <right>
+            <t t-esc="moment(receipt.order_date).format('DD-MM-YYYY')"/>
+            <t t-esc="moment(receipt.order_date).format('H:mm:ss')"/>
+          </right>
+        </line>
+        <hr/>
+        <div bold='on' align="center">
+          <t t-esc="receipt.header"/>
+          , 
+          <t t-esc="receipt.company.street"/>
+        </div>
+        <br/>
+        <div bold='on' align="center">
+          <t t-esc="receipt.company.city"/>
+          -
+          <t t-esc="receipt.company.zip"/>
+          Ph:
+          <t t-esc="receipt.company.phone"/>
+        </div>
+        <hr/>
+        <!-- <t t-if='receipt.header_xml'>
+          <div align="center">
+              <t t-raw='receipt.header_xml'/>
+          </div>
+          <br/>
+          </t>
+          <t t-if='!receipt.header_xml and receipt.header'>
+          <div align="center">
+              <t t-esc="receipt.header"/>
+          </div>
+          <br/>
+          </t>-->
+        <line>
+          <left>
+            <t t-if="receipt.customer.name">
+              M/S:
+              <t t-esc="receipt.customer.name"/>
+            </t>
+          </left>
+          <right>
+            <t t-if="receipt.vehicle_no">
+              V.No:
+              <t t-esc="receipt.vehicle_no"/>
+            </t>
+          </right>
+        </line>
+        <line>
+          <left>
+            <t t-if="receipt.customer.vat">
+              GSTIN:
+              <t t-esc="receipt.customer.vat"/>
+            </t>
+          </left>
+        </line>
+        <!-- Orderlines -->
+        <div class='orderlines' line-ratio='0.6'>
+          <t t-if='receipt.customer.name'>
+            <hr/>
+          </t>
+          <line>
+            <left>Particulars</left>
+            <right>Amount</right>
+          </line>
+          <hr/>
+          <t t-foreach='receipt.orderlines' t-as='line'>
+            <t t-set='simple' t-value='line.discount === 0 and line.unit_name === "Unit(s)" and line.quantity === 1' />
+            <t t-if='simple'>
+              <line>
+                <left>
+                  <t t-esc='line.product_name_wrapped[0]' />
+                  <t t-if='line.hsn_code'>
+                    [
+                    <t t-esc='line.hsn_code'/>
+                    ]
+                  </t>
+                </left>
+                <right>
+                  <value t-att-value-decimals='pos.currency.decimals'>
+                    <t t-esc='line.price_display' />
+                  </value>
+                </right>
+              </line>
+              <t t-call="XmlReceiptWrappedProductNameLines"/>
+            </t>
+            <t t-if='!simple'>
+              <line>
+                <left>
+                  <t t-esc='line.product_name_wrapped[0]' />
+                  <t t-if='line.hsn_code'>
+                    [
+                    <t t-esc='line.hsn_code'/>
+                    ]
+                  </t>
+                </left>
+              </line>
+              <t t-call="XmlReceiptWrappedProductNameLines"/>
+              <t t-if='line.discount !== 0'>
+                <line indent='1'>
+                  <left>
+                    Discount: 
+                    <t t-esc='line.discount' />
+                    %
+                  </left>
+                </line>
+              </t>
+              <line indent='1'>
+                <left>
+                  <value t-att-value-decimals='pos.dp["Product Unit of Measure"]' value-autoint='on'>
+                    <t t-esc='line.quantity' />
+                  </value>
+                  <t t-if='line.unit_name !== "Unit(s)"'>
+                    <t t-esc='line.unit_name' />
+                  </t>
+                  x 
+                  <value t-att-value-decimals='pos.dp["Product Price"]'>
+                    <t t-esc='line.price' />
+                  </value>
+                </left>
+                <right>
+                  <value t-att-value-decimals='pos.currency.decimals'>
+                    <t t-esc='line.price_display' />
+                  </value>
+                </right>
+              </line>
+            </t>
+          </t>
+        </div>
+        <br/>
+        <t t-foreach='receipt.tax_details' t-as='tax'>
+          <line>
+            <left>
+              <t t-esc='tax.name' />
+            </left>
+            <right>
+              <value t-att-value-decimals='pos.currency.decimals' value-autoint='on'>
+                <t t-esc='tax.amount'/>
+              </value>
+            </right>
+          </line>
+        </t>
+        <hr/>
+        <line size='normal' bold='on'>
+          <left>TOTAL</left>
+          <right>
+            <value t-att-value-decimals='pos.currency.decimals'>
+              <t t-esc='receipt.total_with_tax'/>
+            </value>
+          </right>
+        </line>
+        <br/>
+        <!--<line>
+          <t t-foreach='paymentlines' t-as='line'>
+              <left><t t-esc="line.name"/></left>
+              <right><value t-att-value-decimals='pos.currency.decimals'><t t-esc='line.get_amount()'/></value></right>
+          </t>
+          </line>
+          <br/>
+          <line size='double-height'>
+          <left>CHANGE</left>
+          <right><value t-att-value-decimals='pos.currency.decimals'><t t-esc='receipt.change' /></value></right>
+          </line>
+          <br/>
+          <t t-if='receipt.cashier'>
+          <div class="cashier">
+              USER : (<t t-esc='receipt.cashier' />)
+          </div>
+          </t>
+          <hr/>
+          <t t-if='receipt.footer_xml'>
+          <t t-raw='receipt.footer_xml' />
+          </t>
+          <t t-if='!receipt.footer_xml and receipt.footer'>
+          <div>
+              <t t-esc="receipt.footer" />
+          </div>
+          </t>
+          <hr/>-->
+      </div>
+    </receipt>
+  </t>
+  <t t-name="PosTicket">
+    <div class="pos-sale-ticket">
+      <table>
+        <tr>
+          <td style="white-space:nowrap;">
+            GSTIN:
+            <t t-esc="widget.pos.company.gstin || ''"/>
+          </td>
+          <td class="pos-right-align">
+            TIN:
+            <t t-esc="widget.pos.company.vat || ''"/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            DATE: 
+            <t t-esc="moment(order.creation_date).format('DD-MM-YYYY')"/>
+          </td>
+          <td class="pos-right-align">
+            TIME:
+            <t t-esc="moment(order.creation_date).format('H:M:S')"/>
+          </td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td>
+            Bill No: 
+            <t t-esc="order.name"/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            SHIFT: 
+            <t t-esc="widget.pos.pos_session.name"/>
+          </td>
+        </tr>
+      </table>
+      <hr/>
+      <div class="pos-center-align-bold">
+        <t t-esc="widget.pos.company.name"/>
+      </div>
+      <hr/>
+      <div class="pos-center-align">
+        <t t-if="widget.pos.company.street">
+          <t t-esc="widget.pos.company.street"/>
+        </t>
+        <t t-if="widget.pos.company.street2">
+          <t t-esc="widget.pos.company.street2"/>
+        </t>
+        <br/>
+        <t t-if="widget.pos.company.city">
+          <t t-esc="widget.pos.company.city || ''"/>
+          ,
+        </t>
+        <t t-if="widget.pos.company.zip">
+          <t t-esc="widget.pos.company.zip"/>
+        </t>
+        <br/>
+        <t t-if="widget.pos.company.state_id">
+          <t t-esc="widget.pos.company.state_id[1]"/>
+          ,
+        </t>
+        <t t-if="widget.pos.company.country_id">
+          <t t-esc="widget.pos.company.country_id[1]"/>
+          .
+        </t>
+        Phone: 
+        <t t-esc="widget.pos.company.phone || ''"/>
+        <br/>
+      </div>
+      <t t-if="receipt.header">
+        <div style='text-align:center'>
+          <t t-esc="receipt.header"/>
+        </div>
+        <br/>
+      </t>
+      SUPPLY TO M/S:
+      <t t-if="widget.pos.get_client()">
+        <t t-esc="widget.pos.get_client().name"/>
+        <t t-if="widget.pos.get_client().vat">
+          [GSTIN: 
+          <t t-esc="widget.pos.get_client().vat"/>
+          ]
+        </t>
+      </t>
+      <br/>
+      VEHICLE NO:
+      <t t-if="order.get_vehicle_number()">
+        <t t-esc="order.get_vehicle_number()"/>
+      </t>
+      <br/>
+      <br/>
+      <table class='receipt-orderlines'>
+        <colgroup>
+          <col width='18%' style="border:1px solid grey;"/>
+          <col width='25%' style="border:1px solid grey;"/>
+          <col width='22%' style="border:1px solid grey;"/>
+          <col width='13%' style="border:1px solid grey;"/>
+          <col width='22%' style="border:1px solid grey;"/>
+        </colgroup>
+        <tr style="border:1px solid grey;">
+          <th class="pos-right-align">QTY</th>
+          <th class="pos-right-align">ITEM</th>
+          <th class="pos-right-align">HSN</th>
+          <th class="pos-right-align">RATE</th>
+          <th class="pos-right-align">AMT.</th>
+        </tr>
+        <tr t-foreach="receipt['orderlines']" t-as="orderline">
+          <td class="pos-right-align">
+            <t t-esc="orderline['get_quantity_str_with_unit']"/>
+          </td>
+          <td class="pos-right-align">
+            <t t-esc="orderline['product_name']"/>
+            <t t-if="orderline['discount'] > 0">
+              <div class="pos-disc-font">
+                With a 
+                <t t-esc="orderline['discount']"/>
+                % discount
+              </div>
+            </t>
+          </td>
+          <td class="pos-right-align">
+            <t t-esc="orderline['hsn_code'] or '' "></t>
+          </td>
+          <td class="pos-right-align">
+            <t t-esc="orderline['price']"/>
+            <!-- <t t-esc="widget.format_currency(orderline.get_unit_price())"/> -->
+          </td>
+          <td class="pos-right-align">
+            <!--<t t-esc="orderline.get_display_price()"/>-->
+            <!--<t t-esc="orderline['price_display']"/>-->
+            <t t-esc="widget.format_currency(orderline['price_display'])"/>
+          </td>
+        </tr>
+      </table>
+      <br/>
+      <table>
+        <colgroup>
+          <col width='10%' />
+          <col width='40%' />
+          <col width='50%' />
+        </colgroup>
+        <t t-foreach="order.get_tax_details()" t-as="taxdetail">
+          <tr>
+            <td></td>
+            <td>
+              <t t-esc="taxdetail.tax.name"/>
+            </td>
+            <td class="pos-right-align">
+              <t t-esc="widget.format_currency(taxdetail.amount)"/>
+            </td>
+          </tr>
+        </t>
+        <tr class="emph">
+          <td></td>
+          <td>TOTAL:</td>
+          <td class="pos-right-align">
+            <t t-esc="widget.format_currency(order.get_total_with_tax())"/>
+          </td>
+        </tr>
+        <t t-foreach="paymentlines" t-as="line">
+          <tr>
+            <td></td>
+            <td>
+              <t t-esc="line.name"/>
+            </td>
+            <td class="pos-right-align">
+              <t t-esc="widget.format_currency(line.get_amount())"/>
+            </td>
+          </tr>
+        </t>
+        <tr>
+          <td></td>
+          <td>CHANGE:</td>
+          <td class="pos-right-align">
+            <t t-esc="widget.format_currency(order.get_change())"/>
+          </td>
+        </tr>
+      </table>
+      <br />
+      <div class="receipt-user">
+        USER : (
+        <t t-esc="widget.pos.cashier ? widget.pos.cashier.name : widget.pos.user.name"/>
+        )
+      </div>
+      <hr/>
+      <t t-if="receipt.footer">
+        <div style='text-align:center'>
+          <t t-esc="receipt.footer" />
+        </div>
+      </t>
+      <hr/>
+    </div>
+  </t>
+</templates>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_inherit" inherit_id="point_of_sale.assets">
+	<!-- Roja(25-9-18) -->
+        <xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/pos_vehicle/static/src/js/models.js"></script>
+            <script type="text/javascript" src="/pos_vehicle/static/src/js/screens.js"></script>
+            <script type="text/javascript" src="/pos_vehicle/static/src/js/devices.js"></script>
+        </xpath>
+    </template>
+</odoo>

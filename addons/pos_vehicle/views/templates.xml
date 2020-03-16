@@ -1,0 +1,240 @@
+<odoo>
+  <!-- Roja(14-8-18)-->
+  <!-- Changing the header in QWEb report (Roja 20.8.18) !-->
+  <template id="inherit_internal_layout" inherit_id="web.internal_layout">
+    <xpath expr="//div[@class='header']" position="replace">
+      <div class="header">
+        <div class="row">
+          <div class="col-xs-3">
+            <t t-set='date' t-value="(datetime.datetime.now()+datetime.timedelta(hours=5,minutes=30)).strftime('%d-%m-%Y %I:%M %p')"/>
+            <span t-esc="date"/>
+          </div>
+          <div class="col-xs-2 col-xs-offset-2 text-center">
+            <span t-esc="company.name"/>
+          </div>
+          <div class="col-xs-2 col-xs-offset-3 text-right">
+            <ul class="list-inline">
+              <li><span class="page"/></li>
+              <li>/</li>
+              <li><span class="topage"/></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </xpath>
+  </template>
+  <template id="report_sale_details_inherit" inherit_id="point_of_sale.report_saledetails">
+    <xpath expr="//div[@class='page']" position="replace">
+      <div class="page">
+        <div >
+          <h2 class='text-center' >Sales Details</h2>
+          <div>
+            <h5  class="col-xs-6">
+              <b>Starting Date : </b>
+              <t t-esc="s_date" />
+            </h5>
+            <h5 align='right' class="col-xs-6">
+              <b>Ending Date : </b>
+              <t t-esc="e_date" />
+            </h5>
+          </div>
+          <div>
+            <h5 align='left' style="padding:15px;">
+              <b>Bill-No(s): </b>
+              <t t-set="count" t-value="0"/>
+              <t t-foreach='bill_nos' t-as='bill_no'>
+                <t t-set="count" t-value="count+1"/>
+                <t t-if='count == len(bill_nos)'>
+                  <t t-esc="bill_no['start_bill_no']"/>
+                  To 
+                  <t t-esc="bill_no['end_bill_no']"/>
+                </t>
+                <t t-if='not count == len(bill_nos)'>
+                  <t t-esc="bill_no['start_bill_no']"/>
+                  To 
+                  <t t-esc="bill_no['end_bill_no']"/>
+                  ,
+                </t>
+              </t>
+              <t t-if="cs_bill_no">
+                <t t-esc="cs_bill_no"/>
+                To 
+                <t t-esc="ce_bill_no"/>
+              </t>
+            </h5>
+          </div>
+        </div>
+        <!-- Orderlines -->
+        <h3>Products</h3>
+        <table class="table table-bordered">
+          <thead align="right">
+            <tr>
+              <th >Product</th>
+              <th class="text-right">Quantity</th>
+              <th class="text-right">Price Unit</th>
+              <th class="text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr t-foreach='products' t-as='line'>
+              <td >
+                <t t-esc="line['product_name']" />
+              </td>
+              <td class="text-right">
+                <t t-esc="line['qty']" t-options="{'widget': 'float', 'precision': 4}"/>
+                <t t-if='line["uom"] != "Unit(s)"'>
+                  <t t-esc='line["uom"]' />
+                </t>
+              </td>
+              <td align="right">
+                <t t-esc='line["price_unit"]' t-options="{'widget': 'float', 'precision': 3}" />
+                <t t-if='line["discount"] != 0'>
+                  Disc: 
+                  <t t-esc='line["discount"]' />
+                  %
+                </t>
+              </td>
+              <td align="right">
+                <t t-esc="line['amt']" t-options="{'widget': 'float', 'precision': currency_precision}"  />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <br/>
+        <t t-set="tot" t-value="0"/>
+        <h3>Taxes</h3>
+        <table  class="table table-bordered">
+          <thead align="right">
+            <tr >
+              <th>Name</th>
+              <th class="text-right">Base Amount</th>
+              <th class="text-right">Tax Amount</th>
+            </tr>
+          </thead>
+          <tbody >
+            <tr   t-foreach='taxes' t-as='tax'>
+              <td>
+                <t t-esc="tax['name']" />
+              </td>
+              <td align="right" >
+                <t t-esc="tax['base_amount']" t-options="{'widget': 'float', 'precision': currency_precision}"/>
+              </td>
+              <td align="right">
+                <t t-esc="tax['tax_amount']" t-options="{'widget': 'float', 'precision': currency_precision}"/>
+              </td>
+              <t t-set="tot" t-value="tot+round((tax['tax_amount']),2)"/>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-center">
+          <p class="text-right" >
+            Total Tax Amount:
+            <t t-esc="tot" t-options="{'widget': 'float', 'precision': currency_precision}" />
+          </p>
+        </div>
+        <br/>
+        <strong>
+          Total: 
+          <t t-esc='total_paid' t-options="{'widget': 'float', 'precision': currency_precision}"/>
+        </strong>
+        <br/>
+        <h3>Payments</h3>
+        <table  class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th class="text-right" >Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr t-foreach='payments' t-as='payment'>
+              <td>
+                <t t-esc="payment['name']" />
+              </td>
+              <td align="right">
+                <t t-esc="payment['total']" t-options="{'widget': 'float', 'precision': currency_precision}"/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <br/>
+        <t t-if='credit_parties'>
+          <h3>Credit Bills</h3>
+          <table  class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Parties</th>
+                <th class="text-right" >Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr t-foreach='credit_parties' t-as='party'>
+                <td>
+                  <t t-esc="party['name']" />
+                </td>
+                <td align="right">
+                  <t t-esc="party['sum']" t-options="{'widget': 'float', 'precision': currency_precision}"/>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </t>
+        <p style="page-break-before:always;"> </p>
+        <t t-if="del_bills">
+          <h3>Cancelled Bills</h3>
+          <table  class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Bill No</th>
+                <th>Items</th>
+                <th class="text-right">Qty</th>
+                <th class="text-right">Unit Price</th>
+                <th class="text-right">CGST</th>
+                <th class="text-right">SGST</th>
+                <th class="text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr t-foreach="del_bills" t-as='del_bill'>
+                <td>
+                  <t t-esc="del_bill['bill_no']" />
+                </td>
+                <td>
+                  <t t-esc="del_bill['items']" />
+                </td>
+                <td align="right">
+                  <t t-esc="del_bill['qty']"/>
+                </td>
+                <td align="right">
+                  <t t-esc="del_bill['price']"/>
+                </td>
+                <td align="right">
+                  <t t-esc="del_bill['cgst']" t-options="{'widget': 'float', 'precision':currency_precision}"/>
+                </td>
+                <td align="right">
+                  <t t-esc="del_bill['sgst']" t-options="{'widget': 'float', 'precision':currency_precision}"/>
+                </td>
+                <td align="right">
+                  <t t-esc="del_bill['amt']" t-options="{'widget': 'float', 'precision':currency_precision}"/>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </t>
+        <!---Adding page number in footer(Roja 21.8.18) -->
+        <div class="footer">
+          <div class="row">
+            <div align='center'>
+              <small>
+              <span>Page</span>
+              <span class="page" />
+              /
+              <span class="topage" />
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </xpath>
+  </template>
+</odoo>

@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!--Roja(21-9-18)-->
+  <record id='vehicle_model_view_form' model='ir.ui.view'>
+    <field name="name">vehicle.model.form</field>
+    <field name="model">vehicle.model</field>
+    <field name="arch" type="xml">
+      <form string="Model">
+        <sheet>
+          <field name="image_medium" widget='image' class="oe_avatar"/>
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" placeholder="e.g. Model S"/>
+            </h1>
+            <label for="brand_id" class="oe_edit_only"/>
+            <h2>
+              <field name="brand_id" placeholder="e.g. Tesla"/>
+            </h2>
+          </div>
+          <notebook colspan="4">
+            <page string ="Additional Details" >
+              <group colspan="4" col="4" name="details">
+                <field name="category_id" string="Category"/>
+                <field name="model_year" string="Model Year"/>
+                <field name="bodytype_id" string="Body Type"/>
+              </group>
+            </page>
+            <!-- Engine details tree view
+              <page string ="Engines" >
+                  <group name="engines">
+                       <tree>
+                         <field name="engine_id"/>
+                        </tree>
+                  </group>
+              </page>-->
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <!--(Roja 3-10-18) Engine details form view-->
+  <record id='vehicle_engine_view_form' model='ir.ui.view'>
+    <field name="name">vehicle.engine.form</field>
+    <field name="model">vehicle.engine</field>
+    <field name="arch" type="xml">
+      <form string="Engines">
+        <sheet>
+          <field name="image_medium" widget='image' class="oe_avatar"/>
+          <div class="oe_title">
+            <label for="vehicle_model_id" class="oe_edit_only"/>
+            <h2>
+              <field name="vehicle_model_id" />
+            </h2>
+            <label for="name" class="oe_edit_only"/>
+            <h2>
+              <field name="name" />
+            </h2>
+          </div>
+          <group>
+            <group string="Engine">
+              <field name="engine_type"/>
+              <field name="displacement"/>
+              <field name="power"/>
+              <field name="torque"/>
+              <field name="cylinder_no"/>
+            </group>
+            <group string="Transmission">
+              <field name="transmission"/>
+              <field name="gear_no"/>
+            </group>
+          </group>
+          <group>
+            <group string="Fuel Efficiency">
+              <field name="fuel_type"/>
+              <field name="mileage"/>
+              <field name="fuel_tank_capacity"/>
+            </group>
+            <group string="Steering System">
+              <field name="steering_type"/>
+            </group>
+            <group string="Suspension System">
+              <field name="front_suspension"/>
+              <field name="rear_suspension"/>
+            </group>
+            <group string="Brake System">
+              <field name="front_brake_type"/>
+              <field name="rear_brake_type"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <!--(Roja 3-10-18) Engine details tree view-->
+  <record id='vehicle_engine_view_tree' model='ir.ui.view'>
+    <field name="name">vehicle.engine.tree</field>
+    <field name="model">vehicle.engine</field>
+    <field name="arch" type="xml">
+      <tree string="Engines">
+        <field name="vehicle_model_id" />
+        <field name="name" />
+      </tree>
+    </field>
+  </record>
+  <!--(Roja 3-10-18) Engine details search view-->
+  <record id='vehicle_engine_view_search' model='ir.ui.view'>
+    <field name="name">vehicle.engine.search</field>
+    <field name="model">vehicle.engine</field>
+    <field name="arch" type="xml">
+      <search string="Engine model" >
+        <field name="vehicle_model_id" />
+        <group expand="1" string="Group By">
+          <filter name="groupby_model" context="{'group_by' : 'vehicle_model_id'}" string="Model"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <!--(Roja 3-10-18) Engine details kanban view-->
+  <record id="vehicle_engine_kanban_view" model="ir.ui.view">
+    <field name="name">vehicle.engine.kanban</field>
+    <field name="model">vehicle.engine</field>
+    <field name="arch" type="xml">
+      <kanban>
+        <field name="id"/>
+        <field name="engine_type"/>
+        <field name="image_small"/>
+        <field name="image" />
+        <field name="image_medium"/>
+        <field name="vehicle_model_id" />
+        <templates>
+          <t t-name="kanban-box">
+            <div class="oe_kanban_vignette oe_semantic_html_override">
+              <a type="open" href="#" class="o_kanban_image oe_kanban_action">
+              <img t-att-src="kanban_image('vehicle.engine', 'image_medium', record.id.raw_value)" class="img-responsive" style="width:100px;"/>
+              </a>
+              <div class="oe_kanban_details">
+                <h4 class="oe_partner_heading">
+                  <a type="open" class="o_kanban_record_title">
+                    <field name="name"/>
+                  </a>
+                </h4>
+                <ul>
+                  <li>
+                    Type: 
+                    <field name="engine_type"></field>
+                  </li>
+                  <li>
+                    Model: 
+                    <field name="vehicle_model_id"></field>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+  <!--(Roja 3-10-18) Engine details action-->
+  <record id='vehicle_engine_action' model='ir.actions.act_window'>
+    <field name="name">Engine</field>
+    <field name="res_model">vehicle.engine</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="context"></field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Click to create a new engine.
+      </p>
+    </field>
+  </record>
+  <!--(Roja 3-10-18) Vehicle color details form view-->
+  <record id='vehicle_color_view_form' model='ir.ui.view'>
+    <field name="name">vehicle.color.form</field>
+    <field name="model">vehicle.color</field>
+    <field name="arch" type="xml">
+      <form string="Color">
+        <sheet>
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h2>
+              <field name="name" />
+            </h2>
+          </div>
+          <field name="image_medium" widget="image" class="img-medium" style="width:100%;height:100%;"/>
+          <group>
+            <group>
+              <field name="vehicle_model_id"/>
+              <field name="variant_id"/>
+              <field name="price"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <!--(Roja 3-10-18) Color details kanban view-->
+  <record id="vehicle_color_kanban_view" model="ir.ui.view">
+    <field name="name">vehicle.color.kanban</field>
+    <field name="model">vehicle.color</field>
+    <field name="arch" type="xml">
+      <kanban>
+        <field name="id"/>
+        <field name="price"/>
+        <field name="image_medium"/>
+        <field name="vehicle_model_id" />
+        <templates>
+          <t t-name="kanban-box">
+            <div class="oe_kanban_vignette oe_semantic_html_override">
+              <a type="open" href="#" class="o_kanban_image oe_kanban_action">
+              <img t-att-src="kanban_image('vehicle.color', 'image_medium', record.id.raw_value)" class="img-responsive"/>
+              </a>
+              <div class="oe_kanban_details">
+                <h4 class="oe_partner_heading">
+                  <a type="open" class="o_kanban_record_title">
+                    <h4>
+                      <field name="name"/>
+                    </h4>
+                  </a>
+                </h4>
+                <ul>
+                  <li>
+                    Model: 
+                    <field name="vehicle_model_id"></field>
+                  </li>
+                  <li>
+                    <b>
+                      Price: 
+                      <field name="price"></field>
+                    </b>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+  <!--(Roja 3-10-18) Vehicle color details action-->
+  <record id='vehicle_color_action' model='ir.actions.act_window'>
+    <field name="name">Color</field>
+    <field name="res_model">vehicle.color</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="context"></field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Click to create a new vehicle color.
+      </p>
+    </field>
+  </record>
+  <record id='vehicle_variant_view_form' model='ir.ui.view'>
+    <field name="name">vehicle.variant.form</field>
+    <field name="model">vehicle.variant</field>
+    <field name="arch" type="xml">
+      <form string="Variant">
+        <sheet>
+          <field name="image_medium" widget='image' class="oe_avatar"/>
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" placeholder="e.g. FX"/>
+            </h1>
+            <label for="vehicle_model_id" class="oe_edit_only"/>
+            <h2>
+              <field name="vehicle_model_id" />
+            </h2>
+          </div>
+          <field name="category" invisible="1"/>
+          <!-- Engine details in variant-->
+          <notebook colspan="4">
+            <page string="Engine" name="engine">
+              <group name="properties">
+                <group string="Engine">
+                  <!-- <div class="oe_title">
+                    <label for="engine_image" class="oe_edit_only"/>
+                    <h1>
+                        <field name="engine_image" widget="image" class="img-medium" style="width:200px;"/>
+                    </h1>
+                    </div>-->
+                  <field name="engine_type" />
+                  <field name="displacement"/>
+                  <field name="power"/>
+                  <field name="torque"/>
+                  <field name="bore"/>
+                  <field name="stroke"/>
+                  <field name="cylinder_no"/>
+                </group>
+                <group string="Transmission" name="transmission">
+                  <field name="transmission"/>
+                  <field name="gear_no"/>
+                  <field name="clutch_type"/>
+                </group>
+              </group>
+            </page>
+            <page  string="Tyres &amp; Wheels">
+              <group name="properties">
+                <group string="Tyres &amp; Wheels">
+                  <field name="wheel_type" />
+                  <field name="axle_configuration" />
+                  <field name="tyre_type" />
+                  <field name="front_tyre_size" />
+                  <field name="rear_tyre_size"/>
+                  <field name="spare_front_tyre_size" />
+                  <field name="spare_rear_tyre_size"/>
+                </group>
+                <group string="Steering System">
+                  <field name="steering_type" />
+                  <field name="turning_radius" />
+                </group>
+                <group string="Suspension System">
+                  <field name="front_suspension"/>
+                  <field name="rear_suspension"/>
+                </group>
+                <group string="Brake System">
+                  <field name="front_brake_type"/>
+                  <field name="rear_brake_type"/>
+                </group>
+              </group>
+            </page>
+            <page string ="Dimensions &amp; Weight" >
+              <group name="properties">
+                <group string="Dimensions &amp; Weight">
+                  <field name="length"/>
+                  <field name="width"/>
+                  <field name="height"/>
+                  <field name="wheel_base"/>
+                  <field name="kerb_weight"/>
+                  <field name="gross_weight"/>
+                </group>
+                <group string="Fuel Efficiency">
+                  <field name="fuel_type"/>
+                  <field name="mileage"/>
+                  <field name="fuel_tank_capacity"/>
+                </group>
+                <group string="Others">
+                  <field name="seating_capacity"/>
+                  <field name="cargo_space"/>
+                  <field name="front_seat_height"/>
+                  <field name="back_seat_height"/>
+                  <field name="underseat_storage" attrs="{'invisible':[('category', 'not in', ['Two-Wheelers'])]}"/>
+                  <field name="ground_clearance" attrs="{'invisible':[('category', 'not in', ['Two-Wheelers'])]}"/>
+                </group>
+              </group>
+            </page>
+            <page string ="Other Details" attrs="{'invisible':[('category', 'not in', ['Two-Wheelers'])]}">
+              <group name="properties">
+                <group string="Other Details">
+                  <field name="starting_method"/>
+                  <field name="air_filter"/>
+                  <field name="battery"/>
+                  <field name="head_lamp"/>
+                </group>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id='vehicle_bodytype_view_form' model='ir.ui.view'>
+    <field name="name">vehicle.bodytype.form</field>
+    <field name="model">vehicle.bodytype</field>
+    <field name="arch" type="xml">
+      <form string="Bodytype">
+        <sheet>
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" placeholder="e.g. Van"/>
+            </h1>
+            <!--<label for="category_id" class="oe_edit_only"/>
+              <h2>
+                  <field name="category_id" />
+              </h2>-->
+          </div>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id='vehicle_model_view_tree' model='ir.ui.view'>
+    <field name="name">vehicle.model.tree</field>
+    <field name="model">vehicle.model</field>
+    <field name="arch" type="xml">
+      <tree string="Models">
+        <field name="brand_id" />
+        <field name="name" />
+      </tree>
+    </field>
+  </record>
+  <record id='vehicle_model_view_search' model='ir.ui.view'>
+    <field name="name">vehicle.model.search</field>
+    <field name="model">vehicle.model</field>
+    <field name="arch" type="xml">
+      <search string="Vehicles costs" >
+        <field name="brand_id" />
+        <group expand="1" string="Group By">
+          <filter name="groupby_brand" context="{'group_by' : 'brand_id'}" string="Make"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <!-- Vehicle Model kanban view-->
+  <record id='vehicle_model_view_kanban' model='ir.ui.view'>
+    <field name="name">vehicle.modelkanban</field>
+    <field name="model">vehicle.model</field>
+    <field name="arch" type="xml">
+      <kanban>
+        <field name="id"/>
+        <field name="name" />
+        <field name="image" />
+        <field name="brand_id" />
+        <templates>
+          <t t-name="kanban-box">
+            <div class="oe_kanban_vignette oe_semantic_html_override">
+              <a type="open" href="#" class="o_kanban_image oe_kanban_action">
+              <img t-att-src="kanban_image('vehicle.model', 'image_small', record.id.raw_value)" class="img-responsive" style="width:100px;"/>
+              </a>
+              <div class="oe_kanban_details">
+                <h4 class="oe_partner_heading">
+                  <a type="open" class="o_kanban_record_title">
+                    <field name="name"/>
+                  </a>
+                </h4>
+                <ul>
+                  <li>
+                    Make: 
+                    <field name="brand_id"></field>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+  <record id='vehicle_model_action' model='ir.actions.act_window'>
+    <field name="name">Vehicle Model</field>
+    <field name="res_model">vehicle.model</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="context"></field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Click to create a new model.
+      </p>
+      <p>
+        You can define several models (e.g. A3, A4) for each make (Audi).
+      </p>
+    </field>
+  </record>
+  <!-- Vehicle variant kanban view-->
+  <record id='vehicle_variant_view_kanban' model='ir.ui.view'>
+    <field name="name">vehicle.variantkanban</field>
+    <field name="model">vehicle.variant</field>
+    <field name="arch" type="xml">
+      <kanban>
+        <field name="id"/>
+        <field name="name" />
+        <field name="image" />
+        <field name="vehicle_model_id" />
+        <templates>
+          <t t-name="kanban-box">
+            <div class="oe_kanban_vignette oe_semantic_html_override">
+              <a type="open" href="#" class="o_kanban_image oe_kanban_action">
+              <img t-att-src="kanban_image('vehicle.variant', 'image_small', record.id.raw_value)" class="img-responsive" style="width:100px;"/>
+              </a>
+              <div class="oe_kanban_details">
+                <h4 class="oe_partner_heading">
+                  <a type="open" class="o_kanban_record_title">
+                    <field name="name"/>
+                  </a>
+                </h4>
+                <ul>
+                  <li>
+                    Model: 
+                    <field name="vehicle_model_id"></field>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+  <record id='vehicle_variant_view_search' model='ir.ui.view'>
+    <field name="name">vehicle.variant.search</field>
+    <field name="model">vehicle.variant</field>
+    <field name="arch" type="xml">
+      <search string="Vehicles variant" >
+        <field name="vehicle_model_id" />
+        <group expand="1" string="Group By">
+          <filter name="groupby_vehicle_model_id" context="{'group_by' : 'vehicle_model_id'}" string="Model"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id='vehicle_variant_action' model='ir.actions.act_window'>
+    <field name="name">Vehicle Variant</field>
+    <field name="res_model">vehicle.variant</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Click to create a new variant.
+      </p>
+      <p>
+        You can define several variant (e.g. FX,MX) for each mode (Audi/A1).
+      </p>
+    </field>
+  </record>
+  <record id='vehicle_bodytype_view_tree' model='ir.ui.view'>
+    <field name="name">vehicle.bodytype.tree</field>
+    <field name="model">vehicle.bodytype</field>
+    <field name="arch" type="xml">
+      <tree string="Bodytype">
+        <field name="name" />
+      </tree>
+    </field>
+  </record>
+  <record id='vehicle_bodytype_action' model='ir.actions.act_window'>
+    <field name="name">Vehicle Bodytype</field>
+    <field name="res_model">vehicle.bodytype</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Click to create a new bodytype.
+      </p>
+    </field>
+  </record>
+  <menuitem name="Configuration" parent="vehicle_management" id="vehicle_config_menu" sequence="2" />
+  <menuitem action="vehicle_model_action" parent="vehicle_config_menu" id="vehicle_model_menu" sequence="2"/>
+  <menuitem action="vehicle_variant_action" parent="vehicle_config_menu" id="vehicle_variant_menu" sequence="3"/>
+  <menuitem action="vehicle_bodytype_action" parent="vehicle_config_menu" id="vehicle_bodytype_menu" sequence="5"/>
+  <menuitem action="vehicle_engine_action" parent="vehicle_config_menu" id="vehicle_engine_menu" sequence="6"/>
+  <menuitem action="vehicle_color_action" parent="vehicle_config_menu" id="vehicle_color_menu" sequence="7"/>
+  <record id='vehicle_make' model='ir.ui.view'>
+    <field name="name">vehicle.make.tree</field>
+    <field name="model">vehicle.make</field>
+    <field name="arch" type="xml">
+      <tree string="Model Make">
+        <field name="name" />
+      </tree>
+    </field>
+  </record>
+  <record id='vehicle_make_view_form' model='ir.ui.view'>
+    <field name="name">vehicle.make.form</field>
+    <field name="model">vehicle.make</field>
+    <field name="arch" type="xml">
+      <form string="Model Make">
+        <group>
+          <div>
+            <field name="image_medium" widget="image" class="oe_avatar"/>
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name"/>
+            </h1>
+          </div>
+        </group>
+      </form>
+    </field>
+  </record>
+  <record id='vehicle_category_view_form' model='ir.ui.view'>
+    <field name="name">vehicle.category.form</field>
+    <field name="model">vehicle.category</field>
+    <field name="arch" type="xml">
+      <form string="Category">
+        <group>
+          <div>
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name"/>
+            </h1>
+          </div>
+        </group>
+      </form>
+    </field>
+  </record>
+  <record id='vehicle_category_action' model='ir.actions.act_window'>
+    <field name="name">Vehicle category</field>
+    <field name="res_model">vehicle.category</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Click to create a new category.
+      </p>
+    </field>
+  </record>
+  <record id='vehicle_make_view_kanban' model='ir.ui.view'>
+    <field name="name">vehicle.makekanban</field>
+    <field name="model">vehicle.make</field>
+    <field name="arch" type="xml">
+      <kanban>
+        <field name="id"/>
+        <field name="name" />
+        <field name="image" />
+        <templates>
+          <t t-name="kanban-box">
+            <div class="oe_kanban_vignette oe_semantic_html_override">
+              <a type="open" href="#" class="o_kanban_image oe_kanban_action">
+              <img t-att-src="kanban_image('vehicle.make', 'image_small', record.id.raw_value)" class="img-responsive" style="width:100px;"/>
+              </a>
+              <div class="oe_kanban_details">
+                <h4 class="oe_partner_heading">
+                  <a type="open" class="o_kanban_record_title">
+                    <field name="name"/>
+                  </a>
+                </h4>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+  <record id='vehicle_make_action' model='ir.actions.act_window'>
+    <field name="name">Model make of Vehicle</field>
+    <field name="res_model">vehicle.make</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Click to create a new make.
+      </p>
+    </field>
+  </record>
+  <menuitem action="vehicle_make_action" parent="vehicle_config_menu" id="vehicle_make_menu" sequence="1"/>
+  <menuitem action="vehicle_category_action" parent="vehicle_config_menu" id="vehicle_category_menu" sequence="4"/>
+</odoo>

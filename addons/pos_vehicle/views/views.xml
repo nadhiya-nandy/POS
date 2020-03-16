@@ -1,0 +1,216 @@
+<odoo>
+  <data>
+    <!-- Roja(20-9-18)-->
+    <!-- Partner form view inherit for adding vehicle numbers-->
+    <record id="view_partner_form_vehicle" model="ir.ui.view">
+      <field name="name">res.partner.form.vehicle</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="arch" type="xml">
+        <!--<xpath expr="//field[@name='vat']" position="before">		
+          <field name="alias_name"/>
+             </xpath>-->
+        <xpath expr="//page[@name='sales_purchases']" position="after">
+          <page string ="Vehicle" name="pos_product">
+            <group name="vehicle">
+              <tree>
+                <field name="vehicle_no" attrs="{'required':True}"/>
+              </tree>
+            </group>
+          </page>
+        </xpath>
+      </field>
+    </record>
+    <!-- Vehicle details tree view-->
+    <record id="vehicle_details_tree_view" model="ir.ui.view">
+      <field name="name">vehicle.details.tree</field>
+      <field name="model">pos.vehicle</field>
+      <field name="arch" type="xml">
+        <tree string="Vehicle Details">
+          <field name="vehicle_number" string="Vehicle Number"/>
+          <field name="customer_name" string="Owner"/>
+        </tree>
+      </field>
+    </record>
+    <!-- Vehicle details Kanban view-->
+    <record id="vehicle_details_kanban_view" model="ir.ui.view">
+      <field name="name">vehicle.details.kanban</field>
+      <field name="model">pos.vehicle</field>
+      <field name="arch" type="xml">
+        <kanban>
+          <field name="id"/>
+          <field name="image_small"/>
+          <field name="customer_name"/>
+          <field name="pos_order_count"/>
+          <field name="opportunity_count"/>
+          <field name="meeting_count"/>
+          <templates>
+            <t t-name="kanban-box">
+              <div class="oe_kanban_global_click">
+              <div class="o_kanban_image">
+                <img t-att-src="kanban_image('pos.vehicle', 'image_small', record.id.raw_value)"/>
+              </div>
+              <div class="oe_kanban_details">
+                <strong class="o_kanban_record_title">
+                  <field name="vehicle_number"/>
+                </strong>
+                <ul>
+                  <li>
+                    Owner: 
+                    <field name="customer_name"></field>
+                  </li>
+                </ul>
+                <div name="tags"/>
+                  <div name="kanban-icon">
+                    <span t-if="record.pos_order_count.value>0" class="badge">
+                      <i class="fa fa-fw fa-shopping-bag"/>
+                      <t t-esc="record.pos_order_count.value"/>
+                    </span>
+                    <span t-if="record.opportunity_count.value>0" class="badge">
+                      <i class="fa fa-fw fa-star"/>
+                      <t t-esc="record.opportunity_count.value"/>
+                    </span>
+                    <span t-if="record.meeting_count.value>0" class="badge">
+                      <i class="fa fa-fw fa-calendar"/>
+                      <t t-esc="record.meeting_count.value"/>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </t>
+          </templates>
+        </kanban>
+      </field>
+    </record>
+    <!-- Vehicle details form view-->
+    <record id="vehicle_details_form_view" model="ir.ui.view">
+      <field name="name">vehicle.details.form</field>
+      <field name="model">pos.vehicle</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <div class="oe_button_box" name="button_box">
+              <button class="oe_stat_button" type="action" name="%(point_of_sale.action_pos_pos_form)d" 
+                context="{'search_default_vehicle_id': active_id,'default_vehicle_id': active_id}"
+                attrs="{'invisible': ['|', ('pos_order_count', '=', 0)]}"
+                icon="fa-shopping-bag">
+                <field string="POS Sales" name="pos_order_count" widget="statinfo"/>
+              </button>
+              <button name="toggle_active" type="object"
+                class="oe_stat_button" icon="fa-archive">
+                <field name="active" widget="boolean_button"
+                  options='{"terminology": "archive"}'/>
+              </button>
+              <button class="oe_stat_button o_res_partner_tip_opp" type="action"
+                name="%(crm.crm_lead_opportunities)d"
+                icon="fa-star"
+                context="{'search_default_vehicle_id': active_id}">
+                <field string="Opportunities" name="opportunity_count" widget="statinfo"/>
+              </button>
+              <button class="oe_stat_button" type="object"
+                name="schedule_meeting"
+                icon="fa-calendar"
+                >
+                <div class="o_stat_info">
+                  <field name="meeting_count" class="o_stat_value"/>
+                  <span class="o_stat_text" attrs="{'invisible': [('meeting_count', '&lt;', 2)]}"> Meetings</span>
+                  <span class="o_stat_text" attrs="{'invisible': [('meeting_count', '&gt;', 1)]}"> Meeting</span>
+                </div>
+              </button>
+            </div>
+            <field name="image_medium" widget="image" class="oe_avatar"/>
+            <div class="oe_title">
+              <h1>
+                <field name="vehicle_number" placeholder="Vehicle Number" string="Vehicle Number"/>
+              </h1>
+            </div>
+            <group colspan="4" col="4">
+              <field name="customer_name" string="Owner"/>
+              <field name="model_id" string="Model"/>
+              <field name="variant_id" string="Model Variant"/>
+              <!--
+                <field name="model_year" string="Model Year"/>
+                <field name="category_id" string="Vehicle Category"/>
+                <field name="bodytype_id" string="Body Type"/>
+                <field name="fuel_type" string="Fuel Type"/>
+                <field name="axles_no" string="Number of Axles"/>
+                -->
+              <notebook colspan="4">
+                <!-- Vehicle ownership details tree view-->
+                <page string="Ownership History" name="owner_change_ids" >
+                  <field name="owner_change_ids" context="{'vehicle':vehicle_number}">
+                    <tree create='false' string="Ownership change" >
+                      <field name="owners" string="Owner"/>
+                      <field name="reg_date" string="Start Date"/>
+                      <field name="exp_date" string="End Date"/>
+                    </tree>
+                  </field>
+                </page>
+              </notebook>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <!-- POS order tree view inherit-->
+    <record id="inherit_view_pos_order_tree" model="ir.ui.view">
+      <field name="model">pos.order</field>
+      <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//tree/field[@name='partner_id']" position="before">
+          <field name="vehicle_id"/>
+        </xpath>
+      </field>
+    </record>
+    <!-- POS order form view inherit-->
+    <record id="inherit_view_pos_pos_form" model="ir.ui.view">
+      <field name="model">pos.order</field>
+      <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='partner_id']" position="after">
+          <field name="vehicle_id"/>
+          <field name="is_can_sale" readonly="1"/>
+          <field name="pos_reference" invisible ="1"/>
+        </xpath>
+      </field>
+    </record>
+    <!-- POS order search view inherit-->
+    <record id="inherit_view_pos_order_filter" model="ir.ui.view">
+      <field name="model">pos.order</field>
+      <field name="inherit_id" ref="point_of_sale.view_pos_order_filter"/>
+      <field name="arch" type="xml">
+        <xpath expr="//search" position="inside">
+          <field name="vehicle_id"/>
+        </xpath>
+      </field>
+    </record>
+    <!-- Vehicle details action-->
+    <record model="ir.actions.act_window" id="action_vehicle_details">
+      <field name="name">Vehicle Details</field>
+      <field name="res_model">pos.vehicle</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+    <menuitem id="vehicle_management" parent="crm.crm_menu_root" name="Vehicle" sequence="5"/>
+    <menuitem id="Vehicle details" parent="vehicle_management" name="Vehicles" action="action_vehicle_details" sequence="1"/>
+    <!-- open opportunities related to given vehicle -->
+    <record id="inherit_view_create_opportunity_simplified" model="ir.ui.view">
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.view_create_opportunity_simplified"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='partner_id']" position="after">
+          <field name="vehicle_id"/>
+        </xpath>
+      </field>
+    </record>
+    <!-- CRM lead search view inherit-->
+    <record id="inherit_view_crm_case_opportunities_filter" model="ir.ui.view">
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+      <field name="arch" type="xml">
+        <xpath expr="//search" position="inside">
+          <field name="vehicle_id"/>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

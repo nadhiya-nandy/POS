@@ -1,0 +1,28 @@
+<odoo>
+  <record id="pos_config_form_view_inherit" model="ir.ui.view">
+    <field name="name">pos.config.form.view.inherit</field>
+    <field name="model">pos.config</field>
+    <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='iface_print_via_proxy']" position="after">
+        <field name="printer"  attrs="{'invisible' : [('iface_print_via_proxy', '=', False)]}"/>
+      </xpath>
+      <xpath expr="//div[@id='posbox_reference']" position="after">
+       <h2> Receipt Entry </h2>
+        <div class="row mt16 o_settings_container" id="posbox_np" attrs="{'invisible' : [('iface_print_via_proxy', '=', False)]}">
+          <div class="col-xs-12 col-md-6 o_setting_box">
+            <div class="o_setting_left_pane" >
+              <field name="is_receipt_entry" string="Receipt Entry"/>
+            </div>
+            <div class="o_setting_right_pane">
+              <label for="is_receipt_entry"/>
+              <div class="text-muted">
+                Prints bill entry to Receipt dotmatrix printer automatically
+              </div>
+            </div>
+          </div>
+        </div>
+      </xpath>
+    </field>
+  </record>
+</odoo>
