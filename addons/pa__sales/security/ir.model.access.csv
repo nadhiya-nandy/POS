@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pa__sales_pa__sales,pa__sales.pa__sales,model_pa__sales_pa__sales,,1,0,0,0
