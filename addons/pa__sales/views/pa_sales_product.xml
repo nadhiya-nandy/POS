@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="product_template_view_form" model="ir.ui.view">
+      <field name="name">sales_order.form</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="product.product_template_form_view"/>
+      <field name="arch" type="xml">
+        <xpath expr="//div[@name='options']" position="after">
+          <field name="is_combo" string="Is Combo Product"/>
+          <label for="Is_combo"/>
+        </xpath>
+        <xpath expr="//field[@name='to_weight']" position="before">
+          <field name="remove_trailing_zeros"/>
+        </xpath>
+        <xpath expr="//page[@name='notes']" position="after">
+          <page string ="Combo Products" name="pos_product" attrs="{'invisible':[('is_combo','=',False)]}">
+            <group name="combo_product">
+              <field name="sales_product_ids" nolabel="1">
+                <tree editable="bottom">
+                  <field name="sequence"/>
+                  <field name="product_type"/>
+                  <field name="product_id" string="Product"/>
+                  <field name="product_quantity" attrs="{'readonly': [('product_type', '=', 'variable')],
+                    'required': [('product_type', '=', 'fixed')]}"/>
+                </tree>
+                <form>
+                  <group col="4">
+                    <field name="product_type"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="product_quantity" attrs="{'readonly': [('product_type', '=', 'variable')],
+                      'required': [('product_type', '=', 'fixed')]}"/>
+                  </group>
+                </form>
+              </field>
+            </group>
+          </page>
+        </xpath>
+      </field>
+    </record>
+    <record id="product_uom_categ_view_form" model="ir.ui.view">
+      <field name="name">product.uom.categ.form.inherit</field>
+      <field name="model">product.uom.categ</field>
+      <field name="inherit_id" ref="product.product_uom_categ_form_view"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='name']" position="after">
+          <field name="is_pos_groupable" string="Group Products in POS"/>
+        </xpath>
+      </field>
+    </record>
+    <record id="res_company_view_form" model="ir.ui.view">
+      <field name="name">res.company.form.inherit1</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='vat']" position="after">
+          <field name="tin"/>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>
